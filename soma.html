@@ -1,0 +1,36 @@
+<html>
+<body>
+<script language="javascript">
+<!--
+function somatorio(n){
+	
+	function total(x){
+		var soma = parseInt(x);
+		if(soma==1){
+			return 1;
+		}else{
+			return soma+total(soma-1);
+			}
+		}
+	var num = parseInt(n);	
+	var resultado ="";
+	if(num>1){
+		var total =total(num);
+		for(var i=num;i>0;i--){
+			for(var k=i;k>0;k--){
+				resultado += total+" ";
+				total -= 1;
+				}
+			resultado +="<br />";
+			}
+	}else{
+		resultado ="erro";
+		}
+	document.getElementById('result').innerHTML = resultado;
+	}
+//-->
+</script>
+</body>
+<input type="text" name="valor" onKeyUp="somatorio(this.value)"/>
+<p id="result">resultado</p>
+</html>

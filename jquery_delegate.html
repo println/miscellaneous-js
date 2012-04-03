@@ -1,0 +1,180 @@
+﻿<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Delegate</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style type="text/css" media="screen">
+			*,html,body {
+				padding:0;
+				margin:0;
+			}
+			html{
+				background-color:#FFF;
+				font-family:arial,sans-serif;
+			}
+			body{
+				display:block;
+				margin:10px;
+				padding:10px;
+				background-color:#F6F6F6;
+			}
+			nav,article{
+				display:block;
+				padding:5px;
+				margin:5px;
+			}
+			nav{
+				background-color:#DDD;
+			}
+			article{
+				background-color:#FFF;
+			}
+			article section{
+				height:200px;
+				overflow:auto;
+				display:block;
+				font-family:"courier new";
+				color:#555;
+			}
+			article section > p{
+				background-color:#DFD;
+				margin-bottom:1px;
+				padding: 0px 3px 0px 3px;
+			}
+			article section > p:first-child{
+				background-color:#99FFFF;
+				color:black;
+			}
+			article h3{
+				padding:0px 5px 5px 0px;
+			}
+			article div{
+				padding:5px 0px 0px 5px;
+				text-align:right;
+			}
+			footer{
+				text-align:center;
+			}
+			input[type=button]{
+				cursor:pointer;
+				border: 1px solid #CCCCCC;
+				padding:3px;
+				color:#0033CC;
+				-moz-border-radius: 3px;
+				background: -moz-linear-gradient(center top , #FFFFFF, #EFEFEF) repeat scroll 0 0 #F6F6F6;
+			}
+			input[type=button]:hover{
+				border-color: #999999;
+				-moz-box-shadow: 0 0 3px #999999;
+				outline: 0 none;
+			}
+			input[type=button]:active{
+				background:-moz-linear-gradient(center top , #CCCCCC, #FFFFFF) repeat scroll 0 0 #DDDDDD;
+			}
+			body, nav, article{
+				-moz-border-radius: 5px;
+				border-radius:5px;
+				border: 1px solid #DDD;
+			}
+		</style>
+		<script type="text/javascript" src="lib/jquery-1.5.js"></script>
+		<script type="text/javascript">
+			function printOut(d){
+					var now = new Date();
+					var h = now.getHours();
+					var m = now.getMinutes();
+					var s = now.getSeconds();
+					var pt = $('<p>',{text:h+':'+m+':'+s+' - '+d})
+					out.prepend(pt);
+					pt.focus();
+				}
+			
+			$(document).ready(function(){
+				bt1 = $('#bt1');
+				bt2 = $('#bt2');
+				nav = $('nav:eq(1)');
+				out = $('section');
+				clear = $('article div input');
+												
+				clear.bind("click", function(){
+					var conf = confirm("Limpar console?");
+					if(conf){
+						$(this).parents('article').find('section').empty();
+						}
+				});
+				nav.delegate("#bt1", "click", function(){
+					printOut('Delegate funcionando');
+				});
+				$("#bt2").bind("click", function(){
+					printOut('Bind funcionando');
+				});
+				$("#remover").bind("click", function(){
+					var txt;
+					if(Number($('#bt2').length) > 0){
+						nav.empty();
+						txt = 'Botões removidos...';
+					}else{
+						txt = 'Botões inexistentes';
+					}
+					printOut(txt);
+				});
+				$("#addbt1").bind("click", function(){
+					var txt;
+					if(Number($('#bt1').length) == 0){
+						bt1.appendTo(nav);
+						txt = 'Botão Delegate reatachado na tag NAV...';
+					}else{
+						txt = 'Botão Delegate já existe na DOM';
+					}
+					printOut(txt);
+				});
+				$("#addbt2").bind("click", function(){
+					var txt;
+					if(Number($('#bt2').length) == 0){
+						bt2.appendTo(nav);
+						txt = 'Botão Bind reatachado na tag NAV...';
+					}else{
+						txt = 'Botão Bind já existe na DOM';
+					}
+					printOut(txt);
+				});
+				$("#gatilho").bind("click", function(){
+					var disparar = confirm("Disparar Evento?");
+					if(disparar){
+						$("#remover").trigger('click');
+						printOut('Trigger disparado...Hatatata!!!');
+						}
+				});
+				$('#reload').bind('click', function(){
+					location.reload();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>jQuery Delegate Teste 1</h1>
+			<nav>
+				<input id="addbt1" type="button" value="ADD Botão 1" />
+				<input id="addbt2" type="button" value="ADD Botão 2" />
+				<input id="remover" type="button" value="Remover Botões" />
+				<input id="gatilho" type="button" value="Disparar Evento" />
+				<input id="reload" type="button" value="Recarregar página" />
+			</nav>
+			<nav>
+				<input id="bt1" type="button" value="Delegate" />
+				<input id="bt2" type="button" value="Bind" />
+			</nav>
+		</header>
+		<article>
+			<h3>Console</h3>
+			<section></section>
+			<div>
+				<input type="button" value="Limpar" />
+			</div>
+		</article>
+		<footer>
+			<p>html5</p>
+		</footer>
+	</body>
+</html> 

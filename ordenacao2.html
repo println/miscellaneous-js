@@ -1,0 +1,41 @@
+<html>
+<body>
+<script language="javascript">
+<!--
+
+var V = new Array();
+V[0]=0;
+V[1]=10;
+V[2]=2;
+V[3]=1;
+V[4]=8;
+V[5]=80;
+V[6]=50;
+
+function ordenar(i,j){
+	var i,j,indice,busca,temp;
+	function pega(k){
+		var k;
+		if ( busca > V[k]) {
+			busca=V[k];
+			indice=k;		
+			}
+		if(k<j){pega(k+1);
+			}
+		}
+
+		busca=V[i];
+		indice=i;
+		pega(i);
+		temp=V[i];
+		V[i]=V[indice];
+		V[indice]=temp;
+		if (i+1 < j){ordenar(i+1,j);
+	}
+}
+ordenar(1,6)
+	document.write(V.toSource());
+//-->
+</script>
+</body>
+</html>

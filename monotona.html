@@ -1,0 +1,27 @@
+<html>
+<body>
+<script language="javascript">
+<!--
+var entrada;
+var resultado="";
+var monotona;
+while(entrada!="tchau"){
+	monotona=true;
+	entrada = prompt("digite paralvras ou tchau para encerrar");
+	if(entrada!="" && entrada!="tchau" && entrada.length>1){
+		for(var i=0;i<entrada.length-1;i++){
+			if(entrada[i]>entrada[i+1]){
+				monotona=false;
+				}
+			}
+		if(monotona==true){
+			alert("monotona");
+		}else{
+			alert("nao monotona");
+			}
+		}
+	}
+//-->
+</script>
+</body>
+</html>

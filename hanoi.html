@@ -1,0 +1,33 @@
+<html>
+<body>
+<script language="javascript">
+<!--
+function hanoi(n){
+	var x;
+	if ( n > 0 ) {
+		x = 1 + 2*(hanoi( n - 1));
+		return x;
+		}
+	return 0;
+	}
+function getHanoi(n,t){
+	var resultado;
+	switch(t){
+		case 3:
+			resultado=hanoi(n);
+			break;
+		case 4:
+			resultado=hanoi4(n);
+			break;
+		default:
+			resultado = "indisponivel";
+		}
+	document.getElementById('result').innerHTML = resultado;
+    document.getElementById('result').style.color = 'blue';
+}
+//-->
+</script>
+</body>
+<input type="text" name="valor" onBlur="getHanoi(this.value,3)"/>
+<p id="result">resultado</p>
+</html>

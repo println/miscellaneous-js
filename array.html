@@ -1,0 +1,61 @@
+<html>
+<body>
+<script language="javascript">
+function Print(func,x){
+	var y = x.join(", ");
+	document.write(func+" "+y+"<br />");
+	}
+
+var a = [1,2,3];
+Print("join()",a);
+
+var b = new Array(1,2,3);
+b.reverse();
+Print("reverse()",b);
+
+var c = new Array("banana","cherry","apple");
+c.sort();
+Print("sort()",c);
+
+var d = new Array(33,4,1111,222);
+d.sort();
+d.sort(function (a,b){return a-b;});
+Print("sort() Ordem numerica -",d);
+
+var e = [1,2,3];
+Print("concat()",e.concat(4,5));
+Print("concat()",e.concat([4,5]));
+Print("concat()",e.concat([4,5],[6,7]));
+Print("concat()",e.concat(4,[5,[6,7]]));
+
+var f = [1,2,3,4,5];
+Print("slice()",f.slice(0,3));
+Print("slice()",f.slice(3));
+Print("slice()",f.slice(1,-1));
+Print("slice()",f.slice(-3,-2));
+
+var g = new Array(1,2,3,4,5,6,7,8);
+Print("g original",g);
+
+Print("splice()",g.splice(4));
+Print("g:",g);
+
+Print("splice()",g.splice(1,2));
+Print("g:",g);
+
+Print("splice()",g.splice(1,1));
+Print("g:",g);
+
+var h = [1,2,3,4,5];
+Print("h original",h);
+
+Print("splice()",h.splice(2,0,'a','b'));
+Print("h:",h);
+
+Print("splice()",h.splice(2,2,[1,2],3));
+document.write(h+"<br />");
+Print("h:",h);
+
+</script>
+</body>
+</html>

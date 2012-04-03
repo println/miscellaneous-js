@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Primo</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style type="text/css" media="screen">
+			
+			*,html,body {
+				padding:0;
+				margin:0;
+			}
+			html{
+				background-color:#FFF;
+			}
+			body{
+				display:block;
+				margin:10px;
+				padding:10px;
+				background-color:#F6F6F6;
+			}
+			nav{
+				display:block;
+				padding:5px;
+				margin:5px;
+				background-color:#DDD;
+			}
+			.p{
+				background-color:#FFFF00;
+			}
+			.i{
+				background-color:#99FFFF;
+			}
+			.pa{
+				background-color:red;
+			}
+			.pf{
+				background-color:lightgreen;
+			}
+			.graf{
+				height:20px;
+				background-color:red;
+				color:white;
+			}
+			.max{
+				background-color:#ff00ff;
+			}
+			/*extra effects*/
+			body, nav{
+				-moz-border-radius: 5px;
+				border-radius:5px;
+				/*box-shadow: 0px 0px 5px #666;
+				-moz-box-shadow: 0px 0px 5px #666;*/
+				border: solid 1px #DDD;
+			}
+			
+		</style>
+		<script type="text/javascript">
+			var worker = new Worker('primo_4_puro_html5_webworkers.js');
+			worker.onmessage = function (evt) {
+				n = evt.data;
+				alerta.innerHTML = ' Primos Processados!';
+				busca.setAttribute('class','pf');
+				total.innerHTML = n.length+' ocorrencias';
+				btn2.disabled = false;
+				};
+			function execCalc(v){
+				worker.postMessage(v);
+				}
+			
+			function exibir(n,el){
+				var anterior = 1;
+				var max = 1;
+				var soma = 0;
+				var lgt = n.length;
+				var table = document.createElement('table');
+				table.setAttribute('cellspacing','5px');
+				for(var i=0; i< lgt; i++){
+					var inter = (n[i] - anterior);
+					var td1 = document.createElement('td');
+					var td2 = document.createElement('td');
+					var td3 = document.createElement('td');
+					var tr = document.createElement('tr');
+					var rdiv = document.createElement('div');
+					td1.setAttribute('class','p');
+					td2.setAttribute('class','i');
+					rdiv.setAttribute('class','graf');
+					if(inter>max){
+						rdiv.setAttribute('class','graf max');
+						rdiv.innerHTML = soma;
+						soma = 0;
+						max = inter;
+					}else{soma += inter;}
+					rdiv.setAttribute('style','width:'+5*inter+'px;');
+					td1.innerHTML = n[i];
+					td2.innerHTML = n[i] - anterior;
+					td3.appendChild(rdiv);
+					tr.appendChild(td1);
+					tr.appendChild(td2);
+					tr.appendChild(td3);
+					table.appendChild(tr);
+					anterior = n[i];
+					}
+				if(elem = el.childNodes[0])el.removeChild(elem);
+				el.appendChild(table);
+				return true;
+				}
+
+		function calcular(){
+			var valor = document.getElementById("valor").value;
+			if (valor != "" && !isNaN(valor)) {
+				alerta.innerHTML = ' Processando Primos...';
+				busca.setAttribute('class','pa');
+				btn2.disabled = true;
+				execCalc(valor);
+				}
+			}
+		function imprimir(){
+			var cor = function(){
+				busca.setAttribute('class','');
+				}
+			var prt = function(){
+				exibir(n, result);
+				alerta.innerHTML = ' Processo Completo!';
+				busca.setAttribute('class','pf');
+				window.setTimeout(cor, 3600);
+				}
+			if(n.length>0){
+				alerta.innerHTML = ' Executando a impressao...';
+				busca.setAttribute('class','pa');
+				window.setTimeout(prt, 180);
+				}		
+			}
+		function init(){
+			alerta = document.getElementsByTagName("nav")[0].getElementsByTagName("span")[0];
+			result = document.getElementsByTagName("article")[0];
+			btn1 = document.getElementById("bt");
+			btn2 = document.getElementById("bt2");
+			busca = document.getElementsByTagName("nav")[0];
+			total = document.getElementsByTagName("h1")[0].getElementsByTagName("span")[0];
+			addEvent(btn1,"click",calcular);
+			addEvent(btn2,"click",imprimir);
+			}
+		function addEvent(elemento, evento, funcao){
+			if (elemento.addEventListener) elemento.addEventListener(evento, funcao, true);
+		    if (elemento.attachEvent) elemento.attachEvent("on"+evento, funcao);
+		    }
+		addEvent(window,"load",init);
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Primos <span></span></h1>
+			<nav>
+				<input id="valor" type="text" /><input id="bt" type="button" value="Calcular"><input id="bt2" type="button" value="Imprimir" disabled="disabled"><span></span>
+			</nav>
+		</header>
+		<article></article>
+	</body>
+</html> 

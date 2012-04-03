@@ -1,0 +1,47 @@
+<html>
+<body>
+	<script>
+		function Car( n){
+			this.color = null;
+			this.name = n;
+		}
+		Car.prototype.setColor= function(c){
+			this.color = c;
+		}
+		Car.prototype.getColor = function(){
+			return this.color;
+		}
+		Car.prototype.getName = function(){
+			return this.name;
+		}
+		
+		
+		function Monster(n,t){
+			var name;
+			var type;
+			var attackPhrase = "DIE!";
+			
+			(function(){//constructor
+				name = prompt("Enter your name");
+				type = prompt("Enter your class");
+			})();
+			
+			this.getName = function(){
+				return name;
+			}
+			this.getType = function(){
+				return type;
+			}
+			this.attack = function(){
+				alert("i'm saying, "+attackPhrase);
+			}
+		}
+		
+		var monster = new Monster();
+		//var fusca = new Car("Fusca");
+		//alert(fusca.getName());
+		alert("welcome: "+monster.getName()+", "+monster.getType());
+		monster.attack();
+	</script>
+</body>
+</html>

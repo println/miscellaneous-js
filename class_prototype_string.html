@@ -1,0 +1,31 @@
+<html>
+<body>
+<h1><a href="">Classes predefinidas</a></h1>
+<script language="javascript">
+function lastChar(c){
+	return (c == this.charAt(this.length-1));
+	}
+
+String.prototype.endsWith = lastChar;
+
+try{
+	var msg = prompt("Entre com o algum texto","");
+	if (msg==""){
+		throw new Error("Campo vázio!");
+		}
+
+	var n = prompt("Digite o último caracter de: " + msg, "");
+	
+	if(msg.endsWith(n) && n!=""){
+		alert("Último caracter correto: " + n);
+		}
+	else{
+		alert("Último caracter incorreto!");
+		}
+	}
+catch(ex){
+	alert(ex);
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<html>
+<body>
+<h1><a href="">Calculos do circulo</a></h1>
+<script language="javascript">
+function Circle(x, y, r){
+	this.x=x;
+	this.y=y;
+	this.r=r;
+	}
+new Circle(0,0,0);
+
+Circle.prototype.pi=Math.PI;
+
+function Circle_circumference(){
+	return 2*this.pi*this.r;
+	}
+function Circle_area(){
+	return this.pi*this.r*this.r;
+	}
+Circle.prototype.circumference=Circle_circumference;
+Circle.prototype.area= Circle_area;
+
+
+try{
+	var n = prompt("Entre com o valor do raio","");
+	if (n=="" || isNaN(n)){
+		throw new Error("Dado inserido incorretamente!");
+		}
+	else{
+		n = parseInt(n);
+		}
+	var c=new Circle(0,0,n);
+	var b=c.area();
+	var a=c.circumference();
+	document.write("Area = " + b + "<br />");
+	document.write("Circumferencia = " + a + "<br />");
+
+	}
+catch(ex){
+	alert(ex);
+	}
+</script>
+</body>
+</html>

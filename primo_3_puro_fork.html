@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>Primo</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style type="text/css" media="screen">
+			
+			*,html,body {
+				padding:0;
+				margin:0;
+				
+			}
+			#container{
+				margin:30px;
+			}
+			#buscas{
+				padding:10px;
+			}
+			.p{
+				background-color:#FFFF00;
+			}
+			.i{
+				background-color:#99FFFF;
+			}
+			.pa{
+				background-color:red;
+			}
+			.pf{
+				background-color:lightgreen;
+			}
+			.graf{
+				height:20px;
+				background-color:red;
+				color:white;
+			}
+			.max{
+				background-color:#ff00ff;
+			}
+			
+		</style>
+		<script type="text/javascript">
+		function primo(valor){
+			var nv = new Array();
+			for (x = 2; x <= valor; x++) {
+				if ((x == 2 || x == 3 || x == 5) || (x % 2 != 0 && x % 3 != 0 && x % 5 != 0)) {
+					var nPrimo = true;
+					var limite = parseInt(Math.sqrt(x));
+					var y = 2;
+					while (y <= limite && nPrimo) {
+						if (x % y == 0) {
+							nPrimo = false;
+							}
+						y++;
+					}
+					if (nPrimo) {
+						nv.push(x);
+						}
+					}
+				}
+			return nv;
+			}
+			function exibir(n,el){
+				var anterior = 1;
+				var max = 1;
+				var soma = 0;
+				var lgt = n.length;
+				var table = document.createElement('table');
+				table.setAttribute('cellspacing','5px');
+				for(var i=0; i< lgt; i++){
+					var inter = (n[i] - anterior);
+					var td1 = document.createElement('td');
+					var td2 = document.createElement('td');
+					var td3 = document.createElement('td');
+					var tr = document.createElement('tr');
+					var rdiv = document.createElement('div');
+					td1.setAttribute('class','p');
+					td2.setAttribute('class','i');
+					rdiv.setAttribute('class','graf');
+					if(inter>max){
+						rdiv.setAttribute('class','graf max');
+						rdiv.innerHTML = soma;
+						soma = 0;
+						max = inter;
+					}else{soma += inter;}
+					rdiv.setAttribute('style','width:'+5*inter+'px;');
+					td1.innerHTML = n[i];
+					td2.innerHTML = n[i] - anterior;
+					td3.appendChild(rdiv);
+					tr.appendChild(td1);
+					tr.appendChild(td2);
+					tr.appendChild(td3);
+					table.appendChild(tr);
+					anterior = n[i];
+					}
+				if(elem = el.childNodes[0])el.removeChild(elem);
+				el.appendChild(table);
+				return true;
+				}
+
+		function calcular(){
+			var valor = document.getElementById("valor").value;
+			if (valor != "" && !isNaN(valor)) {
+				alerta.innerHTML = ' Processando Primos...';
+				busca.setAttribute('class','pa');
+				var prms = function(){
+					n = primo(valor);
+					alerta.innerHTML = ' Primos Processados!';
+					busca.setAttribute('class','pf');
+					total.innerHTML = n.length+' ocorrencias';
+					btn2.disabled = false;
+				};
+				window.setTimeout(prms, 180);
+				}
+			}
+		function imprimir(){
+			var cor = function(){
+				busca.setAttribute('class','');
+				}
+			var prt = function(){
+				exibir(n, result);
+				alerta.innerHTML = ' Processo Completo!';
+				busca.setAttribute('class','pf');
+				window.setTimeout(cor, 3600);
+				}
+			if(n.length>0){
+				alerta.innerHTML = ' Executando a impressao...';
+				busca.setAttribute('class','pa');
+				window.setTimeout(prt, 180);
+				}		
+			}
+		function init(){
+			alerta = document.getElementById("alert");
+			result = document.getElementById("resulta");
+			btn1 = document.getElementById("bt");
+			btn2 = document.getElementById("bt2");
+			busca = document.getElementById("buscas");
+			total = document.getElementById("prim");
+			addEvent(btn1,"click",calcular);
+			addEvent(btn2,"click",imprimir);
+			}
+		function addEvent(elemento, evento, funcao){
+			
+			if (elemento.addEventListener) elemento.addEventListener(evento, funcao, true);
+		    if (elemento.attachEvent) elemento.attachEvent("on"+evento, funcao);
+		    }
+		addEvent(window,"load",init);
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<h1>Primos <span id="prim"></span></h1>
+			<div id="buscas">
+				<input id='valor' type="text" /><input id="bt" type="button" value="Calcular"><input id="bt2" type="button" value="Imprimir" disabled><span id="alert"></span>
+			</div>
+			<div id="resulta"></div>
+		</div>
+	</body>
+</html>

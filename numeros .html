@@ -1,0 +1,24 @@
+<html>
+<body>
+<p id="result">resultado</p>
+<script language="javascript">
+<!--
+var entrada;
+var vetor = new Array (101);
+var resultado="";
+while(entrada!=0){
+	entrada = parseInt(prompt("Entre com um numero de 1 a 100"));
+	if(entrada>0 && entrada <=100){
+		vetor[entrada]=(isNaN(vetor[entrada]))?0+1:vetor[entrada]+1;
+		}
+	}
+for(var i=1;i<=100;i++){
+	if(!isNaN(vetor[i])){
+		resultado +="O numero "+i+" ocorreu "+vetor[i]+" vezes<br />";
+		}
+	}
+document.getElementById('result').innerHTML = resultado;
+//-->
+</script>
+</body>
+</html>

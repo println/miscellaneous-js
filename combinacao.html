@@ -1,0 +1,33 @@
+<html>
+<body>
+<script language="javascript">
+<!--
+function comb(){
+	function fatorial(fat){
+		if(fat==0){
+			return 1;
+		}else{
+			return fat*fatorial(fat-1); 
+			}
+		}
+	var n = parseInt(document.getElementById('valor1').value);
+	var p = parseInt(document.getElementById('valor2').value);
+	var resultado;
+	if((n>0 && n<=10)&&(p>0 && p<=10)){
+		if(n>=p){
+			resultado = fatorial(n)/(fatorial(p)*fatorial(n-p));
+		}else{
+			resultado = "p maior que n";
+			}
+	}else{
+		resultado = "Erro, numeros fora da faixa permitida";
+		}
+	document.getElementById('result').innerHTML = resultado;
+	}
+//-->
+</script>
+</body>
+n: <input type="text" id="valor1" onBlur="comb()"/><br />
+p: <input type="text" id="valor2" onBlur="comb()"/>
+<p id="result">resultado</p>
+</html>

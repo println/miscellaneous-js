@@ -1,0 +1,16 @@
+<html>
+<body>
+<script language="javascript">
+var pattern = /Java/g;
+
+var text = "JavaScript is more fun than Java!";
+var result;
+
+while((result = pattern.exec(text)) != null){
+	document.write("Matched '" + result[0] + "'" + " at position " + result.index + "; next search begins at " + pattern.lastIndex + "<br />");
+	}
+var pattern = /java/i;
+document.write(pattern.test("JavaScript"));
+</script>
+</body>
+</html>

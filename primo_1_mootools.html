@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<title>Primo</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style type="text/css" media="screen">
+			.graf{
+				height:20px;
+				background-color:red;
+			}
+		</style>
+		<script type="text/javascript" src="lib/mootools.js"></script>
+		<script type="text/javascript">
+		function primo(valor){
+			var primos = new Array();
+			primos[0] = 1;
+			primos[1] = 2;
+			var indice = 0;
+			var el = $('result');
+			el.empty();
+			for (x = 2; x <= valor; x++) {
+				if ((x == 2 || x == 3 || x == 5) || (x % 2 != 0 && x % 3 != 0 && x % 5 != 0)) {
+					var nPrimo = true;
+					var limite = parseInt(Math.sqrt(x));
+					var y = 2;
+					while (y <= limite && nPrimo) {
+						if (y <= indice) {
+							while ((y <= indice + 1) && nPrimo) {
+								if (x % primos[y] == 0) {
+									nPrimo = false;
+								}
+								y++;
+							}
+							y = primos[indice];
+						}
+						else {
+							if (x % y == 0) {
+								nPrimo = false;
+							}
+						}
+						y++;
+					}
+					if (nPrimo) {
+						var inter = (x - primos[indice]);
+						var e = new Element('div', {
+							'class': 'graf',
+							'styles': {
+								'width': inter
+							}
+						});
+						el.adopt(e);
+						e.set('text',inter);
+						//e.set('text',x + '_' + inter);
+						//el.set('html',el.get('html')+(x + ': ' + (x-primos[indice])+'<br>\n'));
+						indice = primos.push(x) - 1;
+						}
+					}
+				}
+			$('prim').set('html',(indice-1)+'');
+			}
+		
+		window.addEvent('domready', function() {
+			$('btn').addEvent('click', function(){
+			    var valor = ($$('input[name=valor]').get('value'));
+				primo(valor);
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<h1>Primos <span id="prim"></span></h1>
+		<input name='valor' type="text" /><input id="btn" type="button" value="Calcular">
+		<div id="result"></div>
+	</body>
+</html>
