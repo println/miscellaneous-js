@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Gerador de links</title>
+		<meta charset="UTF-8" />
+		<style type="text/css" media="screen">
+			*, html, body {
+				padding: 0;
+				margin: 0;
+			}
+			html {
+				background-color: #FFF;
+				font-family: arial, sans-serif;
+			}
+			body {
+				display: block;
+				margin: 10px;
+				padding: 10px;
+				background-color: #F6F6F6;
+			}
+			nav, section, article {
+				display: block;
+				padding: 5px;
+				margin: 5px;
+			}
+			section {
+				background-color: #FFF;
+				overflow: auto;
+				display: block;
+				font-family: "courier new";
+				color: #555;
+			}
+			section article {
+
+			}
+			footer {
+				text-align: center;
+			}
+			textarea, input[type=text] {
+				display: block;
+				font-size: 1.2em;
+				padding: 1%;
+				width: 97.5%;
+			}
+			button {
+				cursor: pointer;
+				border: 1px solid #CCCCCC;
+				padding: 3px;
+				color: #0033CC;
+				-moz-border-radius: 3px;
+				background: -moz-linear-gradient(center top , #FFFFFF, #EFEFEF) repeat scroll 0 0 #F6F6F6;
+			}
+			button:hover {
+				border-color: #999999;
+				-moz-box-shadow: 0 0 3px #999999;
+				outline: 0 none;
+			}
+			button:active {
+				background: -moz-linear-gradient(center top , #CCCCCC, #FFFFFF) repeat scroll 0 0 #DDDDDD;
+			}
+			body, nav, section, input[type=text], textarea {
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				border: 1px solid #DDD;
+			}
+			input[type=text]:focus, textarea:focus {
+				background-color: #EEF9FF;
+			}
+			a {
+				display: block;
+				text-decoration: none;
+			}
+			a:visited {
+				text-decoration: line-through;
+				color: red;
+			}
+			a:hover {
+				background-color: #FFF3E0;
+				text-decoration: underline;
+			}
+
+		</style>
+		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+		<script type="text/javascript">
+			var _wildcard = "{%}";
+			var _elements = Object();
+			$(document).ready(function() {
+				$("#wildcard").text(_wildcard);
+				_elements.textarea = $('textarea');
+				_elements.output = $('output');
+				_elements.regex = $('#regex');
+				_elements.url = $('#url');
+				_elements.button = $('button');
+				_elements.links = $('#links');
+				init();
+			});
+			function init() {
+				_elements.textarea.change(function() {
+					notify();
+				});
+				_elements.output.change(function() {
+					notify();
+				});
+
+				_elements.regex.change(function() {
+					notify();
+				});
+				_elements.regex.keypress(function(e) {
+					if (e.which == 13) {
+						notify();
+					}
+				});
+				_elements.url.change(function() {
+					notify();
+				});
+				_elements.button.click(function() {
+					notify();
+				});
+			}
+
+			function notify() {
+				if (!_elements.regex[0].checkValidity())
+					_elements.regex[0].setCustomValidity('');
+
+				if (_elements.textarea.val().length > 0) {
+					var lines = (_elements.textarea.val()).split('\n');
+					try {
+						var regex = new RegExp(_elements.regex.val());
+					} catch(err) {
+						_elements.regex[0].setCustomValidity('Regex incorreta');
+						return;
+					}
+					//regex para a primeira linha
+					_elements.output.val(lines[0].match(regex));
+
+					if (_elements.url.val().length > 0) {
+						_elements.links.empty();
+						for (var i = 0; i < lines.length; i++) {
+							var regex = new RegExp(_elements.regex.val());
+							var value = lines[i].match(regex);
+							if (value && value.length > 0) {
+								value = String(value).trim();
+								var anchor = $("<a>", {
+									"href" : _elements.url.val().replace(_wildcard, value),
+									"text" : value,
+									"target" : "_blank"
+								});
+								_elements.links.append(anchor);
+							}
+						}
+					}
+
+					return;
+				}
+				_elements.output.val("");
+			}
+
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Gerador de links</h1>
+			<p>
+				O Gerador de links transforma um texto em links, de acordo com o padrão de tratamento do texto(regex) e o padrão para a criação do link
+			</p>
+		</header>
+		<section>
+			<h2>Configuração</h2>
+			<article>
+				<h3>Texto</h3>
+				<textarea placeholder="Texto aqui!"></textarea>
+			</article>
+			<article>
+				<h3>Regex</h3>
+				<input id="regex" type="text" placeholder="Regex aqui!" value=".+"/>
+			</article>
+			<article>
+				<h3>URL com wildcard: <span id="wildcard"></span></h3>
+				<input id="url" type="text" placeholder="URL aqui!" />
+			</article>
+			<article>
+				<button>
+					Gerar Links
+				</button>
+			</article>
+		</section>
+		<section>
+			<h2>Saída do Regex da primeira linha</h2>
+			<article>
+				<output></output>
+			</article>
+		</section>
+		<section>
+			<h2>Links</h2>
+			<article id="links"></article>
+		</section>
+	</body>
+</html>
