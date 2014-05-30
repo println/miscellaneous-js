@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Nome para numero</title>
+		<meta charset="UTF-8" />
+		<style type="text/css" media="screen">
+			*, html, body {
+				padding: 0;
+				margin: 0;
+			}
+			html {
+				background-color: #FFF;
+				font-family: arial, sans-serif;
+			}
+			body {
+				display: block;
+				margin: 10px;
+				padding: 10px;
+				background-color: #F6F6F6;
+			}
+			nav, section, article {
+				display: block;
+				padding: 5px;
+				margin: 5px;
+			}
+			section {
+				background-color: #FFF;
+				overflow: auto;
+				display: block;
+				font-family: "courier new";
+				color: #555;
+			}
+			section article {
+
+			}
+			footer {
+				text-align: center;
+			}
+			textarea, input[type=text] {
+				display: block;
+				font-size: 1.2em;
+				padding: 1%;
+				width: 97.5%;
+			}
+			button {
+				cursor: pointer;
+				border: 1px solid #CCCCCC;
+				padding: 3px;
+				color: #0033CC;
+				-moz-border-radius: 3px;
+				background: -moz-linear-gradient(center top , #FFFFFF, #EFEFEF) repeat scroll 0 0 #F6F6F6;
+			}
+			button:hover {
+				border-color: #999999;
+				-moz-box-shadow: 0 0 3px #999999;
+				outline: 0 none;
+			}
+			button:active {
+				background: -moz-linear-gradient(center top , #CCCCCC, #FFFFFF) repeat scroll 0 0 #DDDDDD;
+			}
+			body, nav, section, input[type=text], textarea {
+				-moz-border-radius: 5px;
+				border-radius: 5px;
+				border: 1px solid #DDD;
+			}
+			input[type=text]:focus, textarea:focus {
+				background-color: #EEF9FF;
+			}
+			a {
+				display: block;
+				text-decoration: none;
+			}
+			a:visited {
+				text-decoration: line-through;
+				color: red;
+			}
+			a:hover {
+				background-color: #FFF3E0;
+				text-decoration: underline;
+			}
+
+		</style>
+		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+		<script type="text/javascript">
+			accentsTidy = function(s) {
+				var r = s.toLowerCase();
+				r = r.replace(new RegExp(/[àáâãäå]/g), "a");
+				r = r.replace(new RegExp(/æ/g), "ae");
+				r = r.replace(new RegExp(/ç/g), "c");
+				r = r.replace(new RegExp(/[èéêë]/g), "e");
+				r = r.replace(new RegExp(/[ìíîï]/g), "i");
+				r = r.replace(new RegExp(/ñ/g), "n");
+				r = r.replace(new RegExp(/[òóôõö]/g), "o");
+				r = r.replace(new RegExp(/œ/g), "oe");
+				r = r.replace(new RegExp(/[ùúûü]/g), "u");
+				r = r.replace(new RegExp(/[ýÿ]/g), "y");
+				r = r.replace(new RegExp(/\d/g), "");
+				r = r.replace(new RegExp(/[_\.]/g), " ");
+				r = r.replace(new RegExp(/[^\w\s]/gi), "");
+				return r;
+			};
+		</script>
+		<script type="text/javascript">
+			var _elements = Object();
+			$(document).ready(function() {
+				_elements.output = $('#output');
+				_elements.name = $('#name');
+				_elements.total = $('#total');
+				_elements.printer = new Printer(_elements.output, _elements.total);
+				_elements.calculator = new Calculator(_elements.printer);
+				
+				
+				//multiple triggers
+				_elements.name.change(function() {
+					execute($(this).val());
+				}).keyup(function() {
+					execute($(this).val());
+				}).bind('input propertychange', function() {
+					execute($(this).val());
+				}).focus(function() {
+					execute($(this).val());
+				});
+				
+				var lastValue = "";
+				var execute = function(value) {
+					if (lastValue != value) {
+						lastValue = value;
+						_elements.calculator.process(value);
+					}
+				};
+				
+				_elements.name.focus();
+			});
+
+			function Calculator(printer) {
+				var _printer = printer;
+				this.process = function(completeName) {
+
+					_printer.reset();
+
+					var cName = accentsTidy(completeName).trim();
+
+					if (cName.length < 1) {
+						return;
+					}
+
+					var names = cName.split(" ");
+					var sum = 0;
+
+					for (var x in names) {
+						var resolved = resolveValue(calculateName(names[x]));
+						sum += resolved;
+					};
+
+					_printer.printResult(resolveValue(sum));
+
+				}
+				var calculateName = function(name) {
+					var asciiReference = 96;
+					var total = 0;
+					_printer.print(name);
+					_printer.print("\t");
+					for (var x = 0; x < name.length; x++) {
+						if (x > 0) {
+							_printer.print(" + ");
+						}
+						var charValue = name.charCodeAt(x) - asciiReference;
+						var resolvedValue = resolveValue(charValue);
+						_printer.print(resolvedValue);
+						total += resolvedValue;
+					}
+					_printer.print(" = ");
+					_printer.println(total);
+
+					return total;
+				}
+				var resolveValue = function(value) {
+					if (value >= 10) {
+						var decimal = Math.floor(value / 10);
+						var unit = value - (decimal * 10);
+						return resolveValue(unit + decimal);
+					}
+					return value;
+				}
+			}
+
+			function Printer(detail, total) {
+				var _element = detail;
+				var _total = total;
+				var _self = this;
+				this.print = function(text) {
+					var oldText = _element.text();
+					_element.text(oldText + text);
+				}
+
+				this.println = function(text) {
+					_self.print(text + "\n");
+				}
+
+				this.printResult = function(text) {
+					_total.text(text);
+				}
+
+				this.reset = function() {
+					_element.text("");
+					_total.text("");
+				}
+			}
+
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Nome para numero</h1>
+			<p>
+				O nome para numero calcula o valor em numero das letras em seu nome, partindo que a letra 'a' vale 1
+			</p>
+		</header>
+		<section>
+			<h2>Configuração</h2>
+			<article>
+				<h3>Entre com o nome aqui</h3>
+				<input id="name" type="text" placeholder="Seu nome aqui!" value=""/>
+			</article>
+		</section>
+		<section>
+			<h2>Detalhamento</h2>
+			<article>
+				<pre id ="output"> </pre>
+			</article>
+		</section>
+		<section>
+			<h2>Soma total</h2>
+			<p id="total"></p>
+		</section>
+	</body>
+</html>
