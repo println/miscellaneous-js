@@ -1,239 +1,325 @@
 <!DOCTYPE HTML>
-<html>
-	<head>
-		<title>Nome para numero</title>
-		<meta charset="UTF-8" />
-		<style type="text/css" media="screen">
-			*, html, body {
-				padding: 0;
-				margin: 0;
-			}
-			html {
-				background-color: #FFF;
-				font-family: arial, sans-serif;
-			}
-			body {
-				display: block;
-				margin: 10px;
-				padding: 10px;
-				background-color: #F6F6F6;
-			}
-			nav, section, article {
-				display: block;
-				padding: 5px;
-				margin: 5px;
-			}
-			section {
-				background-color: #FFF;
-				overflow: auto;
-				display: block;
-				font-family: "courier new";
-				color: #555;
-			}
-			section article {
+<html lang="pt-br">
+<head>
+    <meta name="theme-color" content="#9000B7"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>Nome para número</title>
+    <meta charset="UTF-8"/>
+    <style type="text/css" media="screen">
+        *, html, body {
+            padding: 0;
+            margin: 0;
+        }
 
-			}
-			footer {
-				text-align: center;
-			}
-			textarea, input[type=text] {
-				display: block;
-				font-size: 1.2em;
-				padding: 1%;
-				width: 97.5%;
-			}
-			button {
-				cursor: pointer;
-				border: 1px solid #CCCCCC;
-				padding: 3px;
-				color: #0033CC;
-				-moz-border-radius: 3px;
-				background: -moz-linear-gradient(center top , #FFFFFF, #EFEFEF) repeat scroll 0 0 #F6F6F6;
-			}
-			button:hover {
-				border-color: #999999;
-				-moz-box-shadow: 0 0 3px #999999;
-				outline: 0 none;
-			}
-			button:active {
-				background: -moz-linear-gradient(center top , #CCCCCC, #FFFFFF) repeat scroll 0 0 #DDDDDD;
-			}
-			body, nav, section, input[type=text], textarea {
-				-moz-border-radius: 5px;
-				border-radius: 5px;
-				border: 1px solid #DDD;
-			}
-			input[type=text]:focus, textarea:focus {
-				background-color: #EEF9FF;
-			}
-			a {
-				display: block;
-				text-decoration: none;
-			}
-			a:visited {
-				text-decoration: line-through;
-				color: red;
-			}
-			a:hover {
-				background-color: #FFF3E0;
-				text-decoration: underline;
-			}
+        html {
+            background-color: #FFF;
+            font-family: arial, sans-serif;
+        }
 
-		</style>
-		<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-		<script type="text/javascript">
-			var tabelaPitagorica = ['ajs', 'bkt', 'clu', 'dmv', 'enw', 'fox', 'gpy', 'hqz', 'ir'];
+        body {
+            display: block;
+            margin: 10px;
+            padding: 10px;
+            background-color: #F6F6F6;
+        }
 
-			accentsTidy = function(s) {
-				var r = s.toLowerCase();
-				r = r.replace(new RegExp(/[àáâãäå]/g), "a");
-				r = r.replace(new RegExp(/æ/g), "ae");
-				r = r.replace(new RegExp(/ç/g), "c");
-				r = r.replace(new RegExp(/[èéêë]/g), "e");
-				r = r.replace(new RegExp(/[ìíîï]/g), "i");
-				r = r.replace(new RegExp(/ñ/g), "n");
-				r = r.replace(new RegExp(/[òóôõö]/g), "o");
-				r = r.replace(new RegExp(/œ/g), "oe");
-				r = r.replace(new RegExp(/[ùúûü]/g), "u");
-				r = r.replace(new RegExp(/[ýÿ]/g), "y");
-				r = r.replace(new RegExp(/\d/g), "");
-				r = r.replace(new RegExp(/[_\.]/g), " ");
-				r = r.replace(new RegExp(/[^\w\s]/gi), "");
-				return r;
-			};
-		</script>
-		<script type="text/javascript">
-			var _elements = Object();
-			$(document).ready(function() {
-				_elements.output = $('#output');
-				_elements.name = $('#name');
-				_elements.total = $('#total');
-				_elements.printer = new Printer(_elements.output, _elements.total);
-				_elements.calculator = new Calculator(_elements.printer);
-				
-				
-				//multiple triggers
-				_elements.name.change(function() {
-					execute($(this).val());
-				}).keyup(function() {
-					execute($(this).val());
-				}).bind('input propertychange', function() {
-					execute($(this).val());
-				}).focus(function() {
-					execute($(this).val());
-				});
-				
-				var lastValue = "";
-				var execute = function(value) {
-					if (lastValue != value) {
-						lastValue = value;
-						_elements.calculator.process(value);
-					}
-				};
-				
-				_elements.name.focus();
-			});
+        nav, section, article {
+            display: block;
+            padding: 5px;
+            margin: 5px;
+        }
 
-			function Calculator(printer) {
-				var _printer = printer;
-				this.process = function(completeName) {
+        section {
+            background-color: #FFF;
+            overflow: auto;
+            display: block;
+            font-family: "courier new";
+            color: #555;
+        }
 
-					_printer.reset();
+        section article {
 
-					var cName = accentsTidy(completeName).trim();
+        }
 
-					if (cName.length < 1) {
-						return;
-					}
+        footer {
+            text-align: center;
+        }
 
-					var names = cName.split(" ");
-					var sum = 0;
+        textarea, input[type=text], input[type=date] {
+            display: block;
+            font-size: 1.2em;
+            padding: 1%;
+            width: 97.5%;
+        }
 
-					for (var x in names) {
-						var resolved = resolveValue(calculateName(names[x]));
-						sum += resolved;
-					};
+        button {
+            cursor: pointer;
+            border: 1px solid #CCCCCC;
+            padding: 10px;
+            color: #0033CC;
+            border-radius: 3px;
+            background: linear-gradient(to bottom, #FFFFFF, #EFEFEF) repeat scroll 0 0 #F6F6F6;
+        }
 
-					_printer.printResult(resolveValue(sum));
+        button:hover:enabled {
+            border-color: #999999;
+            box-shadow: 0 0 3px #999999;
+            outline: 0 none;
+        }
 
-				}
-				var calculateName = function(name) {
-					var asciiReference = 96;
-					var total = 0;
-					_printer.print(name);
-					_printer.print("\t");
-					for (var x = 0; x < name.length; x++) {
-						if (x > 0) {
-							_printer.print(" + ");
-						}
-						var charValue = name.charCodeAt(x) - asciiReference;
-						var resolvedValue = resolveValue(charValue);
-						_printer.print(resolvedValue);
-						total += resolvedValue;
-					}
-					_printer.print(" = ");
-					_printer.println(total);
+        button:active:enabled {
+            background: linear-gradient(to bottom, #CCCCCC, #FFFFFF) repeat scroll 0 0 #DDDDDD;
+        }
 
-					return total;
-				}
-				var resolveValue = function(value) {
-					if (value >= 10) {
-						var decimal = Math.floor(value / 10);
-						var unit = value - (decimal * 10);
-						return resolveValue(unit + decimal);
-					}
-					return value;
-				}
-			}
+        button:disabled,
+        button[disabled]
+        button.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
 
-			function Printer(detail, total) {
-				var _element = detail;
-				var _total = total;
-				var _self = this;
-				this.print = function(text) {
-					var oldText = _element.text();
-					_element.text(oldText + text);
-				}
+        body, nav, section, input[type=text], input[type=date], textarea {
+            border-radius: 5px;
+            border: 1px solid #DDD;
+        }
 
-				this.println = function(text) {
-					_self.print(text + "\n");
-				}
+        input[type=text]:focus, input[type=date]:focus, textarea:focus {
+            background-color: #EEF9FF;
+        }
 
-				this.printResult = function(text) {
-					_total.text(text);
-				}
+        a {
+            display: block;
+            text-decoration: none;
+        }
 
-				this.reset = function() {
-					_element.text("");
-					_total.text("");
-				}
-			}
+        a:visited {
+            text-decoration: line-through;
+            color: red;
+        }
 
-		</script>
-	</head>
-	<body>
-		<header>
-			<h1>Nome para numero</h1>
-			<p>
-				O nome para numero calcula o valor em numero das letras em seu nome, partindo que a letra 'a' vale 1
-			</p>
-		</header>
-		<section>
-			<h2>Configuração</h2>
-			<article>
-				<h3>Entre com o nome aqui</h3>
-				<input id="name" type="text" placeholder="Seu nome aqui!" value=""/>
-			</article>
-		</section>
-		<section>
-			<h2>Detalhamento</h2>
-			<article>
-				<pre id ="output"> </pre>
-			</article>
-		</section>
-		<section>
-			<h2>Soma total</h2>
-			<p id="total"></p>
-		</section>
-	</body>
+        a:hover {
+            background-color: #FFF3E0;
+            text-decoration: underline;
+        }
+
+        nav {
+            margin: 10px;
+            border: none;
+            text-align: center;
+        }
+
+        .hide {
+            display: none;
+        }
+
+    </style>
+    <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+    <script type="text/javascript">
+        accentsTidy = function (s) {
+            let r = s.toLowerCase().trim();
+            r = r.replace(new RegExp(/[àáâãäå]/g), "a");
+            r = r.replace(new RegExp(/æ/g), "ae");
+            r = r.replace(new RegExp(/ç/g), "c");
+            r = r.replace(new RegExp(/[èéêë]/g), "e");
+            r = r.replace(new RegExp(/[ìíîï]/g), "i");
+            r = r.replace(new RegExp(/ñ/g), "n");
+            r = r.replace(new RegExp(/[òóôõö]/g), "o");
+            r = r.replace(new RegExp(/œ/g), "oe");
+            r = r.replace(new RegExp(/[ùúûü]/g), "u");
+            r = r.replace(new RegExp(/[ýÿ]/g), "y");
+            r = r.replace(new RegExp(/\d/g), "");
+            r = r.replace(new RegExp(/[_\.]/g), " ");
+            r = r.replace(new RegExp(/[^\w\s]/gi), "");
+            return r;
+        };
+    </script>
+    <script type="text/javascript">
+        const _elements = Object();
+        $(document).ready(function () {
+            _elements.nameButton = $('#name-btn');
+            _elements.dateButton = $('#date-btn');
+            _elements.output = $('#output');
+            _elements.namePanel = $('#name-panel');
+            _elements.datePanel = $('#date-panel');
+            _elements.name = $('#name');
+            _elements.date = $('#date');
+            _elements.total = $('#total');
+            _elements.printer = new Printer(_elements.output, _elements.total);
+            _elements.calculator = new Calculator(_elements.printer);
+
+
+            //multiple triggers
+            _elements.name.bind('keyup keydown focus change paste', function () {
+                _elements.calculator.calculateName($(this).val());
+            })
+
+            _elements.date.bind('keyup keydown focus change paste', function () {
+                _elements.calculator.calculateDate($(this).val());
+            })
+
+            _elements.nameButton.click(function () {
+                _elements.date.val("")
+                _elements.namePanel.removeClass("hide")
+                _elements.datePanel.addClass("hide")
+                _elements.nameButton.prop("disabled", true);
+                _elements.dateButton.prop("disabled", false);
+                _elements.name.focus()
+            })
+            _elements.dateButton.click(function () {
+                _elements.name.val("")
+                _elements.namePanel.addClass("hide")
+                _elements.datePanel.removeClass("hide")
+                _elements.nameButton.prop("disabled", false);
+                _elements.dateButton.prop("disabled", true);
+                _elements.date.focus()
+            })
+
+            _elements.name.focus();
+        });
+
+        function Calculator(printer) {
+            let _printer = printer;
+            let _cache = ""
+
+            this.calculateName = function (name) {
+                if (isInvalid(name)) return;
+
+                const ASCII_REFERENCE = 'a'.charCodeAt(0) - 1;
+                const findNameValues = (name) => name.split("")
+                    .map(char => char.charCodeAt(0) - ASCII_REFERENCE);
+
+                let names = name.split(/\s/).map(n => accentsTidy(n))
+                let entries = names.map(n => ({key: n, values: findNameValues(n)}))
+                process([...entries])
+            }
+
+            this.calculateDate = function (date) {
+                if (isInvalid(date)) return;
+                let numbers = date.trim().split(/\//)
+                let entries = numbers.map(n => ({key: n, values: n.split("").map(s => Number(s))}))
+                process([...entries])
+            }
+
+            function isInvalid(value) {
+                value = value.trim();
+                if(value) {
+                    if(value !== _cache) {
+                        _cache = value
+                        return false
+                    } else return true
+                }
+                if(_cache){
+                    _cache = "";
+                    _printer.reset()
+                }
+                return true
+            }
+
+            function process(entries) {
+                entries.forEach(entry => {
+                    entry.values = entry.values.map(v => resolveValue(v))
+                    entry.sum = entry.values.reduce((a, b) => a + b, 0)
+                })
+
+                let total = resolveValue(entries.map(e => e.sum).reduce((a, b) => a + b, 0))
+
+                output({total: total, entries: entries})
+            }
+
+            function output(result){
+                _printer.reset()
+
+                result.entries.forEach(entry => {
+                    _printer.print(entry.key)
+                    _printer.print("\t")
+                    _printer.print(entry.values.join(" + "))
+                    _printer.print(" = ")
+                    _printer.println(entry.sum)
+                })
+
+                _printer.printResult(result.total)
+            }
+
+            function resolveValue(value) {//recursividade = problema
+                if (value >= 10) {
+                    let decimal = Math.floor(value / 10);
+                    let unit = value - (decimal * 10);
+                    return resolveValue(unit + decimal);
+                }
+                return value;
+            }
+        }
+
+        function Printer(detail, total) {
+            const _element = detail;
+            const _total = total;
+            const _self = this;
+            this.print = function (text) {
+                var oldText = _element.text();
+                _element.text(oldText + text);
+            }
+
+            this.println = function (text) {
+                _self.print(text + "\n");
+            }
+
+            this.printResult = function (text) {
+                let span = $("<span>")
+                let br = $("<br>")
+                let link = $("<a>")
+                let label  = 'https://www.google.com/search?q="numerologia+pitagórica+' + text + '"'
+
+                span.text(text)
+                link.attr("href", label).attr("target","_blank")
+                link.text(label)
+
+                _total.append(span);
+                _total.append(br);
+                _total.append(link);
+            }
+
+            this.reset = function () {
+                _element.text("");
+                _total.text("");
+            }
+        }
+
+    </script>
+</head>
+<body>
+<header>
+    <h1>Nome para numero</h1>
+    <p>
+        O nome para numero calcula o valor em numero das letras em seu nome, partindo que a letra 'a' vale 1
+    </p>
+</header>
+<nav>
+    <button type="button" id="name-btn" disabled>Nome</button>
+    <button type="button" id="date-btn">Nascimento</button>
+</nav>
+<section>
+    <h2>Informação</h2>
+    <article id="name-panel">
+        <h3>Entre com o nome aqui</h3>
+        <input id="name" name="name" type="text" placeholder="Seu nome aqui!" value="" required autocomplete="on"/>
+    </article>
+    <article id="date-panel" class="hide">
+        <h3>Entre com a data aqui</h3>
+        <input type="text" id="date" name="date" maxlength="10" inputmode="numeric" placeholder="Ex natal: 25/12/2025"
+               pattern="^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))$" required autocomplete="on"
+               onkeydown="this.value=this.value.replace(/^(\d\d)(\d)$/g,'$1/$2').replace(/^(\d\d\/\d\d)(\d+)$/g,'$1/$2').replace(/[^\d\/]/g,'')"
+        >
+    </article>
+</section>
+<section>
+    <h2>Detalhamento</h2>
+    <article>
+        <pre id="output"> </pre>
+    </article>
+</section>
+<section>
+    <h2>Soma total</h2>
+    <p id="total"></p>
+</section>
+</body>
 </html>
