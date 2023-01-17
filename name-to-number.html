@@ -181,6 +181,18 @@
 
     </style>
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+    <script type="text/javascript" class="es6-support">
+        var supportsES6 = function() {
+            try {
+                new Function("(a = 0) => a");
+                return true;
+            }
+            catch (err) {
+                alert("this browser does not support")
+                return false;
+            }
+        }();
+    </script>
     <script type="text/javascript" class="utils">
         class StringUtils {
             static accentsTidy(s) {
