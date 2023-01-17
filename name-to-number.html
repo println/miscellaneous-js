@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>Nome para número</title>
     <meta charset="UTF-8"/>
-    <style type="text/css" media="screen">
+    <style media="screen">
         *, html, body {
             padding: 0;
             margin: 0;
@@ -23,10 +23,26 @@
             background-color: #F6F6F6;
         }
 
+        body > header {
+            padding: 30px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        body > header h1 {
+            padding: 10px;
+        }
+
         nav, section, article {
-            display: block;
+            display: flex;
             padding: 5px;
             margin: 5px;
+            flex-direction: column;
+        }
+
+        ol {
+            list-style-type: decimal;
+            padding-left: 1.8em;
         }
 
         section {
@@ -35,6 +51,29 @@
             display: block;
             font-family: "courier new";
             color: #555;
+        }
+
+        body > section:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        section h2 {
+            text-decoration: underline;
+            padding: 10px 5px;
+            background-color: #DDDDDD;
+            margin-bottom: 10px;
+        }
+
+        section ol {
+            font-weight: bold;
+        }
+
+        section ol li:not(:first-child) {
+            margin-top: 10px;
+        }
+
+        section ol li header {
+            text-align: left;
         }
 
         section article {
@@ -46,10 +85,8 @@
         }
 
         textarea, input[type=text], input[type=date] {
-            display: block;
             font-size: 1.2em;
-            padding: 1%;
-            width: 97.5%;
+            padding: 0.7em;
         }
 
         button {
@@ -109,124 +146,300 @@
         }
 
         .hide {
-            display: none;
+            display: none !important;
+        }
+
+        .number {
+            display: inline-flex;
+            flex: 1;
+            flex-direction: column;
+            align-content: flex-end;
+            justify-content: center;
+            border: 1px solid #DDD;
+            border-radius: 5px;
+        }
+
+        .number span {
+            display: block;
+            background-color: #FFFF00;
+            font-size: 2em;
+            padding: 20px;
+            padding-bottom: 15px;
+            text-align: center;
+        }
+
+        .number footer {
+            background-color: green;
+            color: white;
+            font-weight: bold;
+            padding: 5px;
+        }
+
+        .text-center {
+            text-align: center;
         }
 
     </style>
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-    <script type="text/javascript">
-        accentsTidy = function (s) {
-            let r = s.toLowerCase().trim();
-            r = r.replace(new RegExp(/[àáâãäå]/g), "a");
-            r = r.replace(new RegExp(/æ/g), "ae");
-            r = r.replace(new RegExp(/ç/g), "c");
-            r = r.replace(new RegExp(/[èéêë]/g), "e");
-            r = r.replace(new RegExp(/[ìíîï]/g), "i");
-            r = r.replace(new RegExp(/ñ/g), "n");
-            r = r.replace(new RegExp(/[òóôõö]/g), "o");
-            r = r.replace(new RegExp(/œ/g), "oe");
-            r = r.replace(new RegExp(/[ùúûü]/g), "u");
-            r = r.replace(new RegExp(/[ýÿ]/g), "y");
-            r = r.replace(new RegExp(/\d/g), "");
-            r = r.replace(new RegExp(/[_\.]/g), " ");
-            r = r.replace(new RegExp(/[^\w\s]/gi), "");
-            return r;
-        };
+    <script type="text/javascript" class="utils">
+        class StringUtils {
+            static accentsTidy(s) {
+                let r = s.toLowerCase().trim();
+                r = r.replace(new RegExp(/[àáâãäå]/g), "a");
+                r = r.replace(new RegExp(/æ/g), "ae");
+                r = r.replace(new RegExp(/ç/g), "c");
+                r = r.replace(new RegExp(/[èéêë]/g), "e");
+                r = r.replace(new RegExp(/[ìíîï]/g), "i");
+                r = r.replace(new RegExp(/ñ/g), "n");
+                r = r.replace(new RegExp(/[òóôõö]/g), "o");
+                r = r.replace(new RegExp(/œ/g), "oe");
+                r = r.replace(new RegExp(/[ùúûü]/g), "u");
+                r = r.replace(new RegExp(/[ýÿ]/g), "y");
+                r = r.replace(new RegExp(/\d/g), "");
+                r = r.replace(new RegExp(/[_\.]/g), " ");
+                r = r.replace(new RegExp(/[^\w\s]/gi), "");
+                return r;
+            }
+
+            static removeVowels(s) {
+                return s.replace(new RegExp(/[aeiou]/g), "");
+            }
+
+            static removeConsonants(s) {
+                return s.replace(new RegExp('(?![aeiou])[a-z]', 'gi'), "");
+            }
+        }
     </script>
-    <script type="text/javascript">
-        const _elements = Object();
-        $(document).ready(function () {
-            _elements.nameButton = $('#name-btn');
-            _elements.dateButton = $('#date-btn');
-            _elements.output = $('#output');
-            _elements.namePanel = $('#name-panel');
-            _elements.datePanel = $('#date-panel');
-            _elements.name = $('#name');
-            _elements.date = $('#date');
-            _elements.total = $('#total');
-            _elements.printer = new Printer(_elements.output, _elements.total);
-            _elements.calculator = new Calculator(_elements.printer);
-
-
-            //multiple triggers
-            _elements.name.bind('keyup keydown focus change paste', function () {
-                _elements.calculator.calculateName($(this).val());
-            })
-
-            _elements.date.bind('keyup keydown focus change paste', function () {
-                _elements.calculator.calculateDate($(this).val());
-            })
-
-            _elements.nameButton.click(function () {
-                _elements.date.val("")
-                _elements.namePanel.removeClass("hide")
-                _elements.datePanel.addClass("hide")
-                _elements.nameButton.prop("disabled", true);
-                _elements.dateButton.prop("disabled", false);
-                _elements.name.focus()
-            })
-            _elements.dateButton.click(function () {
-                _elements.name.val("")
-                _elements.namePanel.addClass("hide")
-                _elements.datePanel.removeClass("hide")
-                _elements.nameButton.prop("disabled", false);
-                _elements.dateButton.prop("disabled", true);
-                _elements.date.focus()
-            })
-
-            _elements.name.focus();
-        });
-
-        function Calculator(printer) {
-            let _printer = printer;
-            let _cache = ""
-
-            this.calculateName = function (name) {
-                if (isInvalid(name)) return;
-
-                const ASCII_REFERENCE = 'a'.charCodeAt(0) - 1;
-                const findNameValues = (name) => name.split("")
-                    .map(char => char.charCodeAt(0) - ASCII_REFERENCE);
-
-                let names = name.split(/\s/).map(n => accentsTidy(n))
-                let entries = names.map(n => ({key: n, values: findNameValues(n)}))
-                process([...entries])
+    <script type="text/javascript" class="dto">
+        class Detail {
+            constructor(content, values, sum) {
+                this.content = content
+                this.values = values
+                this.sum = sum
+            }
+        }
+    </script>
+    <script type="text/javascript" class="processors">
+        class PythagoreanSystem {
+            applySimple(value) {
+                return this.#process(value).number
             }
 
-            this.calculateDate = function (date) {
-                if (isInvalid(date)) return;
-                let numbers = date.trim().split(/\//)
-                let entries = numbers.map(n => ({key: n, values: n.split("").map(s => Number(s))}))
-                process([...entries])
+            apply(value) {
+                return this.#process(value, true)
             }
 
-            function isInvalid(value) {
-                value = value.trim();
-                if(value) {
-                    if(value !== _cache) {
-                        _cache = value
-                        return false
-                    } else return true
+            #process(value, checkMasters = false) {
+                const MASTER_NUMBERS = [11, 22, 33]
+                let isMaster = checkMasters && MASTER_NUMBERS.includes(value)
+
+                if (!isMaster && value >= 10) {
+                    let decimal = Math.floor(value / 10);
+                    let unit = value - (decimal * 10);
+                    return this.#process(unit + decimal);//recursividade = problema
                 }
-                if(_cache){
-                    _cache = "";
-                    _printer.reset()
-                }
-                return true
+                return {number: value, isMaster: isMaster};
+            }
+        }
+
+        class NumberProcessor {
+            constructor(system) {
+                this.system = system;
             }
 
-            function process(entries) {
-                entries.forEach(entry => {
-                    entry.values = entry.values.map(v => resolveValue(v))
-                    entry.sum = entry.values.reduce((a, b) => a + b, 0)
+            calculate(parts) {
+                let partials = this.#calculatePartials(parts)
+                let totalSum = partials.map(d => d.sum).reduce((a, b) => a + b, 0)
+                let result = this.system.apply(totalSum)
+                result.datails = partials
+                return result
+            }
+
+            #calculatePartials(parts) {
+                return parts.map(part => {
+                    let values = this._getValuesInPythagoreanSystem(part)
+                    let sum = values.reduce((a, b) => a + b, 0)
+                    return new Detail(part, values, sum)
                 })
-
-                let total = resolveValue(entries.map(e => e.sum).reduce((a, b) => a + b, 0))
-
-                output({total: total, entries: entries})
             }
 
-            function output(result){
+            _getValuesInPythagoreanSystem(part) {
+                return part.toString().split("")
+                    .map(char => this.system.applySimple(parseInt(char)));
+            }
+        }
+
+        class NameProcessor extends NumberProcessor {
+            static ASCII_REFERENCE = 'a'.charCodeAt(0) - 1;
+
+            constructor(system) {
+                super(system);
+                this.system = system
+            }
+
+            calculateExpressionNumber(name) {
+                let names = this.#splitNames(name)
+                return this.calculate(names)
+            }
+
+            calculateSoulNumber(name) {
+                let names = this.#splitNames(name)
+                let vowels = names.map(n => StringUtils.removeConsonants(n))
+                return this.calculate(vowels)
+            }
+
+            calculateCharacterNumber(name) {
+                let names = this.#splitNames(name)
+                let consonants = names.map(n => StringUtils.removeVowels(n))
+                return this.calculate(consonants)
+            }
+
+            #splitNames(fullName) {
+                return fullName.trim().split(/\s/).map(n => StringUtils.accentsTidy(n))
+            }
+
+            _getValuesInPythagoreanSystem(word) {
+                return word.split("")
+                    .map(char => this.system.applySimple(char.charCodeAt(0) - NameProcessor.ASCII_REFERENCE));
+            }
+        }
+
+        class DateProcessor extends NumberProcessor {
+
+            constructor(system) {
+                super(system);
+            }
+
+            calculateLifePath(date) {
+                let parts = this.#splitDate(date)
+                return this.calculate(parts)
+            }
+
+            calculateBirthDay(date) {
+                let spliced = this.#splitDate(date)
+                let day = spliced[0] || ""
+                let parts = [day]
+                return this.calculate(parts)
+            }
+
+            calculateFirstImpression(date) {
+                let spliced = this.#splitDate(date)
+                let day = spliced[0] || ""
+                let month = spliced[1] || ""
+                let parts = [day, month]
+                return this.calculate(parts)
+            }
+
+            calculateCurrentEnergy(date) {
+                let spliced = this.#splitDate(date)
+                let day = spliced[0] || ""
+                let month = spliced[1] || ""
+                let currentYear = new Date().getFullYear().toString()
+                let parts = [day, month, currentYear]
+                return this.calculate(parts)
+            }
+
+            calculateEnergyOfTheYear() {
+                let year = new Date().getFullYear().toString()
+                let parts = [year]
+                return this.calculate(parts)
+            }
+
+            #splitDate(fullDate) {
+                return fullDate.trim().split(/\//)
+            }
+        }
+
+        class AddressProcessor extends NumberProcessor {
+
+            constructor(system) {
+                super(system);
+            }
+
+            calculateHomeEnergy(homeNumbers) {
+                let parts = this.#splitHomeNumbers(homeNumbers)
+                return super.calculate(parts);
+            }
+
+            #splitHomeNumbers(homeNumbers) {
+                return homeNumbers.trim().split(/[,\s]+/g)
+                    .map(n => n.trim())
+            }
+        }
+    </script>
+    <script type="text/javascript" class="calculator">
+        function Calculator() {
+            const base = new PythagoreanSystem()
+            const nameProcessor = new NameProcessor(base)
+            const dateProcessor = new DateProcessor(base)
+            const addressProcessor = new AddressProcessor(base)
+
+            let _cache = ""
+            const CACHE = {
+                name: {value: "", data: null},
+                date: {value: "", data: null},
+                homeNumbers: {value: "", data: null},
+                year: {value: 0, data: null},
+                mutations: () => {
+                    let ops = Object.assign({}, ...Object.keys(CACHE).reverse().splice(1).map(key =>
+                        ({
+                            ["update" + key[0].toUpperCase() + key.slice(1)]: (value, data) => {
+                                if (CACHE[key].value !== value) {
+                                    CACHE[key].data = data
+                                }
+                                return ops
+                            }
+                        })))
+                    return ops
+                }
+            }
+
+            this.calculate = function (name, date, homeNumbers) {
+                let year = new Date().getFullYear()
+                let resultOfName = CACHE.name.value == name ? CACHE.name.data : processName(name);
+                let resultOfDate = CACHE.date.value == date ? CACHE.date.data : processDate(date);
+                let resultOfHomeNumbers = CACHE.homeNumbers.value == homeNumbers ? CACHE.homeNumbers.data : processHomeNumbers(homeNumbers);
+                let resultOfYear = CACHE.year.value == year ? CACHE.year.data : processYear(year);
+
+                CACHE.mutations()
+                    .updateName(name, resultOfName)
+                    .updateDate(date, resultOfDate)
+                    .updateHomeNumbers(homeNumbers, resultOfHomeNumbers)
+                    .updateYear(year, resultOfYear)
+
+                return {...resultOfName, ...resultOfDate, ...resultOfHomeNumbers, ...resultOfYear}
+            }
+
+            function processName(name) {
+                return {
+                    expression: nameProcessor.calculateExpressionNumber(name),
+                    soul: nameProcessor.calculateSoulNumber(name),
+                    character: nameProcessor.calculateCharacterNumber(name),
+                };
+            }
+
+            function processDate(date) {
+                return {
+                    lifePath: dateProcessor.calculateLifePath(date),
+                    birthDay: dateProcessor.calculateBirthDay(date),
+                    firstImpression: dateProcessor.calculateFirstImpression(date),
+                    currentEnergy: dateProcessor.calculateCurrentEnergy(date),
+                }
+            }
+
+            function processHomeNumbers(homeNumbers) {
+                return {
+                    homeEnergy: addressProcessor.calculateHomeEnergy(homeNumbers),
+                };
+            }
+
+            function processYear(year) {
+                return {
+                    energyOfTheYear: dateProcessor.calculateEnergyOfTheYear(),
+                };
+            }
+
+            function output(result) {
                 _printer.reset()
 
                 result.entries.forEach(entry => {
@@ -239,17 +452,9 @@
 
                 _printer.printResult(result.total)
             }
-
-            function resolveValue(value) {//recursividade = problema
-                if (value >= 10) {
-                    let decimal = Math.floor(value / 10);
-                    let unit = value - (decimal * 10);
-                    return resolveValue(unit + decimal);
-                }
-                return value;
-            }
         }
-
+    </script>
+    <script type="text/javascript" class="printer">
         function Printer(detail, total) {
             const _element = detail;
             const _total = total;
@@ -267,10 +472,10 @@
                 let span = $("<span>")
                 let br = $("<br>")
                 let link = $("<a>")
-                let label  = 'https://www.google.com/search?q="numerologia+pitagórica+' + text + '"'
+                let label = 'https://www.google.com/search?q="numerologia+pitagórica+' + text + '"'
 
                 span.text(text)
-                link.attr("href", label).attr("target","_blank")
+                link.attr("href", label).attr("target", "_blank")
                 link.text(label)
 
                 _total.append(span);
@@ -283,43 +488,194 @@
                 _total.text("");
             }
         }
+    </script>
+    <script type="text/javascript" class="main">
+        const _elements = Object();
+        $(document).ready(function () {
+            _elements.output = $('#output');
+            _elements.name = $('#name');
+            _elements.date = $('#date');
+            _elements.address = $('#address-number');
+            _elements.total = $('#total');
+            _elements.printer = new Printer(_elements.output, _elements.total);
+            _elements.calculator = new Calculator(_elements.printer);
 
+            _elements.report = {
+                lifePath: $('#result-life-path'),
+                expression: $('#result-expression'),
+                birthDay: $('#result-birth-day'),
+                firstImpression: $('#result-first-impression'),
+                soul: $('#result-soul'),
+                character: $('#result-character'),
+                homeEnergy: $('#result-home-energy'),
+                energyOfTheYear: $('#result-energy-of-the-year'),
+                currentEnergy: $('#result-current-energy'),
+            }
+
+            //multiple triggers
+            $('#name, #date, #address-number').bind('keyup keydown focus change paste', function () {
+                let name = _elements.name.val()
+                let date = _elements.date.val()
+                let address = _elements.address.val()
+                let result = _elements.calculator.calculate(name, date, address)
+                plotResults(result)
+            })
+
+            _elements.name.focus();
+
+            function plotResults(result) {
+                console.log(result)
+                Object.keys(_elements.report).forEach(k => {
+                    if(result[k]){
+                        _elements.report[k].removeClass('hide')
+                        _elements.report[k].find('span').text(result[k].number)
+                        if(result[k].isMaster){
+                            _elements.report[k].find('footer').removeClass('hide')
+                        } else {
+                            _elements.report[k].find('footer').addClass('hide')
+                        }
+                    } else {
+                        _elements.report[k].addClass('hide')
+                    }
+                })
+            }
+        });
     </script>
 </head>
 <body>
 <header>
-    <h1>Nome para numero</h1>
+    <h1>Numerologia pitagórica</h1>
     <p>
-        O nome para numero calcula o valor em numero das letras em seu nome, partindo que a letra 'a' vale 1
+        Consulte seus números
     </p>
 </header>
-<nav>
-    <button type="button" id="name-btn" disabled>Nome</button>
-    <button type="button" id="date-btn">Nascimento</button>
-</nav>
 <section>
-    <h2>Informação</h2>
-    <article id="name-panel">
-        <h3>Entre com o nome aqui</h3>
+    <h2>Perfil</h2>
+    <article>
+        <h3>Nome completo</h3>
         <input id="name" name="name" type="text" placeholder="Seu nome aqui!" value="" required autocomplete="on"/>
     </article>
-    <article id="date-panel" class="hide">
-        <h3>Entre com a data aqui</h3>
+    <article>
+        <h3>Data de nascimento</h3>
         <input type="text" id="date" name="date" maxlength="10" inputmode="numeric" placeholder="Ex natal: 25/12/2025"
                pattern="^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))$" required autocomplete="on"
                onkeydown="this.value=this.value.replace(/^(\d\d)(\d)$/g,'$1/$2').replace(/^(\d\d\/\d\d)(\d+)$/g,'$1/$2').replace(/[^\d\/]/g,'')"
         >
     </article>
-</section>
-<section>
-    <h2>Detalhamento</h2>
     <article>
-        <pre id="output"> </pre>
+        <h3>Numeração da casa</h3>
+        <input type="text" id="address-number" name="address-number" inputmode="numeric"
+               placeholder="Ex numero 10, apto 2: 10,2" autocomplete="on"
+               onblur="this.value=this.value.replace(/,*$/g,'').trim()"
+               onkeydown="this.value=this.value.replace(/,{2}$/g,'').replace(/^,+/g,'').replace(/,+/g,',').replace(/\s/g,',').replace(/[^\d,]/g,'')"
+        >
     </article>
 </section>
+<section class="result">
+    <h2>Resultados</h2>
+    <ol>
+        <li class="text-center">
+            <header>
+                <h3>Número do Caminho da Vida</h3>
+                <p>data de nascimento</p>
+            </header>
+            <div id="result-life-path" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Número de Expressão</h3>
+                <p>nome completo</p>
+            </header>
+            <div id="result-expression" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Número do Dia do Nascimento</h3>
+                <p>dia do nascimento</p>
+            </header>
+            <div id="result-birth-day" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Número da Primeira Impressão</h3>
+                <p>Dia e mês do nascimento</p>
+            </header>
+            <div id="result-first-impression" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Número da Alma</h3>
+                <p>Vogais do nome de batismo</p>
+            </header>
+            <div id="result-soul" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Número do Caráter</h3>
+                <p>Consoantes do nome de batismo</p>
+            </header>
+            <div id="result-character" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Energia da casa</h3>
+                <p>Número da casa e complemento</p>
+            </header>
+            <div id="result-home-energy" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Energia do ano</h3>
+                <p>Ano atual</p>
+            </header>
+            <div id="result-energy-of-the-year" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+        <li class="text-center">
+            <header>
+                <h3>Energia atual</h3>
+                <p>Último aniversário da pessoa</p>
+            </header>
+            <div id="result-current-energy" class="number hide">
+                <span>0</span>
+                <footer class="hide">master</footer>
+            </div>
+        </li>
+    </ol>
+</section>
 <section>
-    <h2>Soma total</h2>
-    <p id="total"></p>
+    <h2>Referências</h2>
+    <ol>
+        <li>
+            <a target="_blank" href="https://numerologiarevelada.com/guia-completo-numerologia-pitagorica">www.numerologiarevelada.com</a>
+        </li>
+        <li>
+            <a target="_blank" href="https://www.astrocentro.com.br/blog/numerologia/numerologia-pitagorica/">www.astrocentro.com.br</a>
+        </li>
+    </ol>
 </section>
 </body>
 </html>
