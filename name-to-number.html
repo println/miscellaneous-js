@@ -247,8 +247,16 @@
                 this.system = system;
             }
 
-            calculate(parts) {
+            _calculate(parts) {
                 let partials = this.#calculatePartials(parts)
+                let totalSum = partials.map(d => d.sum).reduce((a, b) => a + b, 0)
+                let result = this.system.apply(totalSum)
+                result.datails = partials
+                return result
+            }
+
+            _calculateUnique(part) {
+                let partials = [new Detail(part, parseInt(part), parseInt(part))]
                 let totalSum = partials.map(d => d.sum).reduce((a, b) => a + b, 0)
                 let result = this.system.apply(totalSum)
                 result.datails = partials
@@ -279,19 +287,19 @@
 
             calculateExpressionNumber(name) {
                 let names = this.#splitNames(name)
-                return this.calculate(names)
+                return this._calculate(names)
             }
 
             calculateSoulNumber(name) {
                 let names = this.#splitNames(name)
                 let vowels = names.map(n => StringUtils.removeConsonants(n))
-                return this.calculate(vowels)
+                return this._calculate(vowels)
             }
 
             calculateCharacterNumber(name) {
                 let names = this.#splitNames(name)
                 let consonants = names.map(n => StringUtils.removeVowels(n))
-                return this.calculate(consonants)
+                return this._calculate(consonants)
             }
 
             #splitNames(fullName) {
@@ -312,14 +320,13 @@
 
             calculateLifePath(date) {
                 let parts = this.#splitDate(date)
-                return this.calculate(parts)
+                return this._calculate(parts)
             }
 
             calculateBirthDay(date) {
                 let spliced = this.#splitDate(date)
-                let day = spliced[0] || ""
-                let parts = [day]
-                return this.calculate(parts)
+                let day = spliced[0] || 0
+                return this._calculateUnique(day)
             }
 
             calculateFirstImpression(date) {
@@ -327,22 +334,25 @@
                 let day = spliced[0] || ""
                 let month = spliced[1] || ""
                 let parts = [day, month]
-                return this.calculate(parts)
+                return this._calculate(parts)
             }
 
             calculateCurrentEnergy(date) {
                 let spliced = this.#splitDate(date)
                 let day = spliced[0] || ""
                 let month = spliced[1] || ""
+                let currentDay = new Date().getDate()
+                let currentMonth = new Date().getMonth() + 1
                 let currentYear = new Date().getFullYear().toString()
-                let parts = [day, month, currentYear]
-                return this.calculate(parts)
+                let year = (month <= currentMonth) || (day <= currentDay) ? currentYear : currentYear - 1
+                let parts = [day, month, year]
+                return this._calculate(parts)
             }
 
             calculateEnergyOfTheYear() {
                 let year = new Date().getFullYear().toString()
                 let parts = [year]
-                return this.calculate(parts)
+                return this._calculate(parts)
             }
 
             #splitDate(fullDate) {
@@ -358,7 +368,7 @@
 
             calculateHomeEnergy(homeNumbers) {
                 let parts = this.#splitHomeNumbers(homeNumbers)
-                return super.calculate(parts);
+                return super._calculate(parts);
             }
 
             #splitHomeNumbers(homeNumbers) {
@@ -525,10 +535,10 @@
 
             function plotResults(result) {
                 Object.keys(_elements.report).forEach(k => {
-                    if(result[k]){
+                    if (result[k]) {
                         _elements.report[k].removeClass('hide')
                         _elements.report[k].find('span').text(result[k].number)
-                        if(result[k].isMaster){
+                        if (result[k].isMaster) {
                             _elements.report[k].find('footer').removeClass('hide')
                         } else {
                             _elements.report[k].find('footer').addClass('hide')
@@ -580,7 +590,7 @@
             </header>
             <div id="result-life-path" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -590,7 +600,7 @@
             </header>
             <div id="result-expression" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -600,7 +610,7 @@
             </header>
             <div id="result-birth-day" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -610,7 +620,7 @@
             </header>
             <div id="result-first-impression" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -620,7 +630,7 @@
             </header>
             <div id="result-soul" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -630,7 +640,7 @@
             </header>
             <div id="result-character" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -640,7 +650,7 @@
             </header>
             <div id="result-home-energy" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -650,7 +660,7 @@
             </header>
             <div id="result-energy-of-the-year" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
         <li class="text-center">
@@ -660,7 +670,7 @@
             </header>
             <div id="result-current-energy" class="number hide">
                 <span>0</span>
-                <footer class="hide">master</footer>
+                <footer class="hide">número mestre</footer>
             </div>
         </li>
     </ol>
